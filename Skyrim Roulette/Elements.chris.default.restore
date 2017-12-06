@@ -1,0 +1,13 @@
+Race:Brenton,Bosmer,Redguard,Argonian,Orc,Altmer,Khajit,Imperial,Nord,Dunmer
+Playstyle:Wizard,Knight,Ranger,Barbarian,Spellsword,Shaman,Necromancer/Warlock,Assassin,Paladin,Bard
+Faction:The Companions,Mage's College,Dark Brotherhood,Thieves Guild,Dawnguard,Vampire,Blade,Imperial Army,Stormcloak,Bard's College
+Followers:Adelaisa Vendicci,Aela the Huntress,Agmaer,Ahtar,Annekke Crag-Jumper,Aranea Ienith,Argis the Bulwark,Athis,Belrand,Benor,Borgakh the Steel Heart,Brelyna Maryon,Calder,Celann,Cicero,Cosnach,Dark Brotherhood Initiate,Derkeethus,Durak,Eola,Erandur,Erik the Slayer,Faendal,Farkas,Frea,Ghorbash the Iron Hand,Golldir,Gregor,Illia,Ingjard,Inheritance,Iona,J'zargo,Jenassa,Jordis the Sword-Maiden,Kharjo,Lob,Lydia,Ma'jhad,Marcurio,Mjoll the Lioness,Njada Stonearm,Ogol,Onmund,Ralis Sedarys,Rayya,Ria,Roggi Knot-Beard,Serana,Spectral Assassin (Skyrim),Spectral Dragon Priest,Stenvar,Sven,Talvas Fathryon,Teldryn Sero,Torvar,Ugor,Uthgerd the Unbroken,Valdimar (Hearthfire),Vilkas,Vorstag 
+Non-Human:Armored Troll,Bran,CuSith,Garmr,Meeko,Riekling,Sceolang,Steadfast Dwarven Sphere,Stray Dog,Vigilance
+**
+You will be the Race: {}as the: {}in the faction: {}with the follower: {}and the side follower: {}
+**
+Race+Altmer,Brenton:+Playstyle+Knight,Ranger,Barbarian,Paladin+Followers+Golldir,Cosnach
+Race+Argonian,Bosmer,Dunmer:+Playstyle+Knight,Barbarian,Paladin
+Race+Nord,Khajit:+Playstyle+Wizard,Spellsword,Shaman,Necromancer/Warlock
+Race+Imperial:+Playstyle+Assassin
+Race+Orc:+Playstyle+Wizard,Ranger,Spellsword,Shaman,Assassin

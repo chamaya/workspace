@@ -1,0 +1,18 @@
+class Solution(object):
+    def coinChange(self, coins, amount):
+        """
+        :type coins: List[int]
+        :type amount: int
+        :rtype: int
+        """
+        if amount == 0:
+            return 0
+        coins.sort()
+        m = [None] + [amount + 1 for _ in range(amount)]
+        for coin in coins:
+            if coin > amount:
+                break
+            m[coin] = 1
+            for j in range(1,amount - coin + 1):
+                m[j+coin] = min(m[j + coin], m[j] + 1)
+        return m[-1] if m[-1] <= amount else -1 
