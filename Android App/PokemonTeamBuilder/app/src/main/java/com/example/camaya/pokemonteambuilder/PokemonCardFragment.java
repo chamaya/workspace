@@ -40,11 +40,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
-
-
 public class PokemonCardFragment extends Fragment {
 
     @BindView(R.id.pokemon_image)
@@ -61,6 +56,7 @@ public class PokemonCardFragment extends Fragment {
 
     int PokemonId;
     Future<String> PokemonNameThread;
+    Pokemon CurrentPokemon;
 
     final String POKEMON_IMAGE_URL = "https://www.serebii.net/art/th/%d.png";
     final String POKEMON_INFO_URL = "https://pokeapi.co/api/v2/pokemon/%d/";

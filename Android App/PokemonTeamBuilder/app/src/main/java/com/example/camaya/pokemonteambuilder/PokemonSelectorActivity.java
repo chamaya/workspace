@@ -31,11 +31,15 @@ public class PokemonSelectorActivity extends AppCompatActivity {
         PokemonCardFragment pokemonCard = (PokemonCardFragment) getSupportFragmentManager().findFragmentById(R.id.card_fragment);
         int pokemonId = getRandomPokemon();
         pokemonCard.updateCardById(pokemonId);
-        if(PokemonAdded.size() >= 6){
-            return;
-        }
+
         PokemonAdded.add(pokemonId);
         addPokeballs();
+
+        if(PokemonAdded.size() >= 6){
+            Intent intent = new Intent(PokemonSelectorActivity.this, PokemonSpriteViewActivity.class);
+
+            startActivity(intent);
+        }
     }
 
     public void skipPokemon(View view) {
