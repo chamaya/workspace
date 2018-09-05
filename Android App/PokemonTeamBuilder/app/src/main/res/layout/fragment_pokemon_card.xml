@@ -52,12 +52,18 @@
                 android:textAllCaps="true"
                 android:textColor="#FFFFFF"
                 android:textSize="50sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="4sp"
+                android:id="@+id/pokemon_move_layout">
+            </LinearLayout>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/pokemon_moves"
                 android:text="Moves"
-                android:gravity="center"
                 android:textAllCaps="true"
                 android:textColor="#FFFFFF"
                 android:textSize="50sp" />

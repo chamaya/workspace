@@ -3,15 +3,19 @@ package com.example.camaya.pokemonteambuilder;
 
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,6 +30,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ThreadLocalRandom;
@@ -105,7 +111,7 @@ public class PokemonCardFragment extends Fragment {
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         if(savedInstanceState == null){
-            PokemonId = 1;
+            PokemonId = 7;
         }
         else{
             PokemonId = savedInstanceState.getInt("PokemonId", 25);
@@ -121,6 +127,8 @@ public class PokemonCardFragment extends Fragment {
     }
 
     public void updateCardById(int id){
+        LinearLayout moveLayout = getActivity().findViewById(R.id.pokemon_move_layout);
+        moveLayout.removeAllViews();
         if(PokemonNameThread != null){
             PokemonNameThread.cancel(true);
         }
@@ -187,13 +195,13 @@ public class PokemonCardFragment extends Fragment {
             JSONArray pokemonMovesArray = pokemonJson.getJSONArray("moves");
             if(pokemonMovesArray.length() <= NUMBER_OF_POKEMON_MOVES){
                 for(int move = 0; move < pokemonMovesArray.length(); move++){
-                    pokemonMoves += pokemonMovesArray.getJSONObject(move).getJSONObject("move").getString("name") + "\n";
+                    addPokemonMove(pokemonMovesArray.getJSONObject(move).getJSONObject("move"));
                 }
             }else{
                 int move = ThreadLocalRandom.current().nextInt(pokemonMovesArray.length());
                 for(int c =0; c < NUMBER_OF_POKEMON_MOVES; c++,
                     move = (move + 1) % pokemonMovesArray.length()){
-                    pokemonMoves += pokemonMovesArray.getJSONObject(move).getJSONObject("move").getString("name") + "\n";
+                    addPokemonMove(pokemonMovesArray.getJSONObject(move).getJSONObject("move"));
                 }
             }
 
@@ -204,11 +212,74 @@ public class PokemonCardFragment extends Fragment {
                 pokemonName.substring(1);
         PokemonName.setText(pokemonName);
         PokemonType.setText(pokemonType.substring(0,pokemonType.length() - 1));
-        PokemonMoves.setText(pokemonMoves.substring(0,pokemonMoves.length() - 1));
+        //PokemonMoves.setText(pokemonMoves.substring(0,pokemonMoves.length() - 1));
         int color = POKEMON_TYPE_COLORS.get(mainType);
         PokemonDetailsLayout.setBackgroundColor(getResources().getColor(color));
 
 
     }
+
+    private void addPokemonMove(JSONObject move) {
+        try {
+            final String moveName = move.getString("name");
+            final String moveUrl = move.getString("url");
+            Ion.with(this)
+                .load(moveUrl)
+                .asString()
+                .setCallback(new FutureCallback<String>() {
+                    @Override
+                    public void onCompleted(Exception e, String result) {
+                        try{
+                            if(e instanceof CancellationException){
+                                throw new CancellationException();
+                            }
+                            JSONObject pokemonJson = new JSONObject(result);
+                            Integer power = pokemonJson.optInt("power");
+                            String type = capitalizeFirstLetter(pokemonJson.getJSONObject("type").getString("name"));
+                            setPokemonMoveLayout(capitalizeFirstLetter(moveName), (power != null) ? power : 20, type);
+
+                        }catch(JSONException je) {
+                            Log.v("HELP", moveUrl);
+                        }catch(CancellationException ce){
+                            return;
+                        }
+                    }
+
+                });
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void setPokemonMoveLayout(String moveName, int power, String type) {
+
+        LinearLayout moveLayout = getActivity().findViewById(R.id.pokemon_move_layout);
+        View move = getLayoutInflater().inflate(R.layout.layout_move, moveLayout,false);
+        TextView moveNameTv =  move.findViewById(R.id.move_name_tv);
+        TextView movePowerTv =  move.findViewById(R.id.move_power_tv);
+        moveNameTv.setText(moveName);
+        movePowerTv.setText(power + "");
+        int color = POKEMON_TYPE_COLORS.get(type);
+        //move.setBackgroundColor(getResources().getColor(color));
+        GradientDrawable bg = (GradientDrawable) move.getBackground();
+        bg.setColor(getResources().getColor(color));
+
+        moveLayout.addView(move);
+
+
+    }
+
+    private String capitalizeFirstLetter(String str){
+        if(str.length() > 1) {
+            return str.substring(0, 1).toUpperCase() + str.substring(1);
+        }else{
+            return str.toUpperCase();
+        }
+    }
+
+
 }
 //java.util.concurrent.CancellationException
