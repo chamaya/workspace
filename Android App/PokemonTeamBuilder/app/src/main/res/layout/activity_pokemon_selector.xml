@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/grass"
+    tools:context=".PokemonSelectorActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/pokeball_layout"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="10sp">
+
+    </LinearLayout>
+
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/card_fragment"
+        tools:layout="@layout/fragment_pokemon_card"
+        android:layout_weight="6"
+        android:name="com.example.camaya.pokemonteambuilder.PokemonCardFragment"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:paddingVertical="10sp">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:onClick="skipPokemon"
+            android:text="Skip"
+            android:layout_marginRight="20sp"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:onClick="addPokemon"
+            android:text="Add"/>
+    </LinearLayout>
+
+</LinearLayout>
