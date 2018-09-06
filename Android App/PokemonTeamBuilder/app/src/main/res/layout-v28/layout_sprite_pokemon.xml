@@ -12,21 +12,20 @@
         android:scaleType="fitEnd"
         android:src="@drawable/mimikyu"
         android:id="@+id/pokemon_sprite"/>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"></LinearLayout>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_weight="1"
+        >
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20sp"
             android:textColor="#FFFFFF"
             android:text="POKEMON"
-
+            android:gravity="end"
             android:id="@+id/pokemon_sprite_name"/>
         <TextView
             android:layout_width="match_parent"
@@ -34,17 +33,17 @@
             android:textSize="20sp"
             android:textColor="#FFFFFF"
             android:gravity="end"
-            android:text="TYPE"
+            android:text="TYPEEEEEEEEEEEEEE"
             android:id="@+id/pokemon_sprite_type"/>
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:textSize="15sp"
-            android:textFontWeight="50dp"
             android:textColor="#FFFFFF"
-            android:gravity="end"
+            android:gravity="end|bottom"
             android:text="NDX#: 1"
             android:id="@+id/pokemon_sprite_num"/>
+
     </LinearLayout>
 
 </LinearLayout>

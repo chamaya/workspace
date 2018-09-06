@@ -62,7 +62,7 @@ public class PokemonCardFragment extends Fragment {
     final String POKEMON_IMAGE_URL = "https://www.serebii.net/art/th/%d.png";
     final String POKEMON_INFO_URL = "https://pokeapi.co/api/v2/pokemon/%d/";
     final int NUMBER_OF_POKEMON_MOVES = 4;
-    final HashMap<String, Integer> POKEMON_TYPE_COLORS = new HashMap<String, Integer>(){
+    public static final HashMap<String, Integer> POKEMON_TYPE_COLORS = new HashMap<String, Integer>(){
         {
             put("Normal", R.color.NormalType);
             put("Fire", R.color.FireType);
@@ -133,7 +133,7 @@ public class PokemonCardFragment extends Fragment {
             PokemonNameThread.cancel(true);
         }
         resetLayout();
-        CurrentPokemon.setId(PokemonId);
+        CurrentPokemon.setId(id);
         PokemonId = id;
 
         final String pokemonImageUrlFormated = String.format(POKEMON_IMAGE_URL, PokemonId);
@@ -185,11 +185,9 @@ public class PokemonCardFragment extends Fragment {
             JSONArray pokemonTypeArray;
             pokemonTypeArray = pokemonJson.getJSONArray("types");
             for(int type = 0; type < pokemonTypeArray.length(); type++){
-                pokemonType += pokemonTypeArray.getJSONObject(type).getJSONObject("type").getString("name") + "/";
+                pokemonType += capitalizeFirstLetter(pokemonTypeArray.getJSONObject(type).getJSONObject("type").getString("name")) + "/";
                 if(pokemonTypeArray.getJSONObject(type).getInt("slot") == 1){
-                    mainType = pokemonType.split("/")[type];
-                    mainType = mainType.substring(0,1).toUpperCase() +
-                            mainType.substring(1);
+                    mainType = capitalizeFirstLetter(pokemonType.split("/")[type]);
                 }
             }
             pokemonType = pokemonType.substring(0,pokemonType.length() - 1);
