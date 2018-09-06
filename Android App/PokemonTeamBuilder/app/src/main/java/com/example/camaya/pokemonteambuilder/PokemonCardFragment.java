@@ -174,6 +174,29 @@ public class PokemonCardFragment extends Fragment {
         if(PokemonNameThread != null){
             PokemonNameThread.cancel(true);
         }
+        resetLayout();
+        PokemonId = pokemon.getId();
+        //will probably be removed when threading
+        CurrentPokemon = pokemon;
+        final String pokemonImageUrlFormated = String.format(POKEMON_IMAGE_URL, pokemon.getId());
+        Picasso.get()
+                .load(pokemonImageUrlFormated)
+                .placeholder(R.drawable.pikachu_sill)
+                .into(PokemonImage);
+
+        PokemonName.setText(pokemon.getName());
+        CurrentPokemon.setName(pokemon.getName());
+        PokemonType.setText(pokemon.getType());
+        CurrentPokemon.setType(pokemon.getType());
+        CurrentPokemon.setMainType(pokemon.getMainType());
+        int color = POKEMON_TYPE_COLORS.get(pokemon.getMainType());
+        PokemonDetailsLayout.setBackgroundColor(getResources().getColor(color));
+
+        for(int moveIndex = 0; moveIndex < pokemon.movePoolSize(); moveIndex++) {
+            setPokemonMoveLayout(pokemon.moveName(moveIndex), pokemon.movePower(moveIndex), pokemon.moveType(moveIndex));
+        }
+
+
     }
 
     private void resetLayout() {
