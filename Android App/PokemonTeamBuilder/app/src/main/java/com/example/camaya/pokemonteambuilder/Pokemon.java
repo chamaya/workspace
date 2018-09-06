@@ -31,6 +31,14 @@ public class Pokemon implements Serializable{
         Moves.add(new Move(name, power, type));
     }
 
+    public void addMove(Move move){
+        Moves.add(move);
+    }
+
+    public boolean hasMove(){
+        return Moves.size() != 0;
+    }
+
     public int movePoolSize(){
         return Moves.size();
     }
@@ -77,6 +85,14 @@ public class Pokemon implements Serializable{
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public boolean hasDetails() {
+        return !name.isEmpty();
+    }
+
+    public boolean isReady(){
+        return hasDetails() && hasMove();
     }
 
     public class Move implements Serializable{

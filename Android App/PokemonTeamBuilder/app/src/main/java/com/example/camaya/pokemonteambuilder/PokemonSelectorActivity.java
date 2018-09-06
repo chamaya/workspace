@@ -28,7 +28,15 @@ public class PokemonSelectorActivity extends AppCompatActivity {
 
     public void addPokemon(View view) {
         PokemonCardFragment pokemonCard = (PokemonCardFragment) getSupportFragmentManager().findFragmentById(R.id.card_fragment);
-        PokemonAdded.add(pokemonCard.getPokemon());
+        Pokemon pokemon = null;
+//        while(pokemon == null){
+//            pokemon = pokemonCard.getPokemon();
+//        }
+        pokemon = pokemonCard.getPokemon();
+        if(pokemon == null){
+            return;
+        }
+        PokemonAdded.add(pokemon);
         int pokemonId = getRandomPokemon();
         pokemonCard.updateCardById(pokemonId);
 
