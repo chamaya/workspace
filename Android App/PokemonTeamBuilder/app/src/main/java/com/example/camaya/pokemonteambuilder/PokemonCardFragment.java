@@ -274,7 +274,6 @@ public class PokemonCardFragment extends Fragment {
         moveNameTv.setText(moveName);
         movePowerTv.setText(power + "");
         int color = POKEMON_TYPE_COLORS.get(type);
-        //move.setBackgroundColor(getResources().getColor(color));
         GradientDrawable bg = (GradientDrawable) move.getBackground();
         bg.setColor(getResources().getColor(color));
 

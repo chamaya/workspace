@@ -6,12 +6,13 @@
     android:layout_weight="1"
     android:background="@drawable/layout_move_custom_boarder">
 
-    <ImageView
+    <ImageButton
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:scaleType="fitEnd"
         android:src="@drawable/mimikyu"
-        android:id="@+id/pokemon_sprite"/>
+        android:id="@+id/pokemon_sprite"
+        android:background="@null"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
