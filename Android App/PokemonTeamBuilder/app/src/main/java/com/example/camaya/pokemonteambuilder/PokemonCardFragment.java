@@ -108,13 +108,12 @@ public class PokemonCardFragment extends Fragment {
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        if(savedInstanceState == null){
-            PokemonId = 7;
+        if(savedInstanceState == null && PokemonId < 1){
+            PokemonId = 4;
         }
-        else{
+        else if(PokemonId <= 1){
             PokemonId = savedInstanceState.getInt("PokemonId", 25);
         }
-
         updateCardById(PokemonId);
 
     }
@@ -129,6 +128,7 @@ public class PokemonCardFragment extends Fragment {
         CurrentPokemon = new Pokemon();
         LinearLayout moveLayout = getActivity().findViewById(R.id.pokemon_move_layout);
         moveLayout.removeAllViews();
+        //REMOVE WHEN THREADING
         if(PokemonNameThread != null){
             PokemonNameThread.cancel(true);
         }
@@ -165,6 +165,15 @@ public class PokemonCardFragment extends Fragment {
 
                 });
 
+    }
+
+    public void updateCardByPokemon(Pokemon pokemon){
+        LinearLayout moveLayout = getActivity().findViewById(R.id.pokemon_move_layout);
+        moveLayout.removeAllViews();
+        //REMOVE WHEN THREADING
+        if(PokemonNameThread != null){
+            PokemonNameThread.cancel(true);
+        }
     }
 
     private void resetLayout() {

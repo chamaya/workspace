@@ -40,7 +40,7 @@ public class PokemonSpriteViewActivity extends AppCompatActivity {
         pokemonSpriteLayout.removeAllViews();
 
         for (int pokemonId = 0; pokemonId < pokemonAdded.size(); pokemonId++) {
-            Pokemon pokemon = pokemonAdded.get(pokemonId);
+            final Pokemon pokemon = pokemonAdded.get(pokemonId);
 
             View inflated = LayoutInflater.from(this).inflate(R.layout.layout_sprite_pokemon, pokemonSpriteLayout, false);
             ImageButton pokemonSprite = inflated.findViewById(R.id.pokemon_sprite);
@@ -58,6 +58,7 @@ public class PokemonSpriteViewActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(PokemonSpriteViewActivity.this, "CLICKABLE", Toast.LENGTH_SHORT).show();
+                    startCardCloseUp(pokemon);
                 }
             });
 
@@ -81,5 +82,12 @@ public class PokemonSpriteViewActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    private void startCardCloseUp(Pokemon pokemon) {
+        Intent intent = new Intent(this, PokemonCardCloseUpActivity.class);
+        intent.putExtra("pokemonId", pokemon.getId());
+
+        startActivity(intent);
     }
 }
