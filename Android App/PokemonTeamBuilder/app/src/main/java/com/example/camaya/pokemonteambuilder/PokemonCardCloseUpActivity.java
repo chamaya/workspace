@@ -15,9 +15,9 @@ public class PokemonCardCloseUpActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        int pokemonId = bundle.getInt("pokemonId");
+        Pokemon pokemon = (Pokemon) bundle.getSerializable("pokemon");
 
         PokemonCardFragment pokemonCard = (PokemonCardFragment) getSupportFragmentManager().findFragmentById(R.id.card_fragment_close_up);
-        pokemonCard.updateCardById(pokemonId);
+        pokemonCard.updateCardByPokemon(pokemon);
     }
 }

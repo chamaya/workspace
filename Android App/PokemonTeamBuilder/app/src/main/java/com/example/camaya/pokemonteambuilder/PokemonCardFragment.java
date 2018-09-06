@@ -96,7 +96,6 @@ public class PokemonCardFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_pokemon_card, container, false);
         ButterKnife.bind(this,view);
-        CurrentPokemon = new Pokemon();
         return view;
     }
 
@@ -108,13 +107,16 @@ public class PokemonCardFragment extends Fragment {
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        if(savedInstanceState == null && PokemonId < 1){
-            PokemonId = 4;
+        if(savedInstanceState == null && CurrentPokemon == null){
+            updateCardById(4);
         }
-        else if(PokemonId <= 1){
-            PokemonId = savedInstanceState.getInt("PokemonId", 25);
+        else if(savedInstanceState == null && CurrentPokemon != null){
+            updateCardByPokemon(CurrentPokemon);
         }
-        updateCardById(PokemonId);
+        else{
+            Pokemon pokemon = (Pokemon) savedInstanceState.getSerializable("CurrentPokemon");
+            updateCardByPokemon(pokemon);
+        }
 
     }
 
@@ -122,6 +124,7 @@ public class PokemonCardFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("PokemonId", PokemonId);
+        outState.putSerializable("CurrentPokemon", CurrentPokemon);
     }
 
     public void updateCardById(int id){
@@ -170,10 +173,7 @@ public class PokemonCardFragment extends Fragment {
     public void updateCardByPokemon(Pokemon pokemon){
         LinearLayout moveLayout = getActivity().findViewById(R.id.pokemon_move_layout);
         moveLayout.removeAllViews();
-        //REMOVE WHEN THREADING
-        if(PokemonNameThread != null){
-            PokemonNameThread.cancel(true);
-        }
+
         resetLayout();
         PokemonId = pokemon.getId();
         //will probably be removed when threading
@@ -185,10 +185,7 @@ public class PokemonCardFragment extends Fragment {
                 .into(PokemonImage);
 
         PokemonName.setText(pokemon.getName());
-        CurrentPokemon.setName(pokemon.getName());
         PokemonType.setText(pokemon.getType());
-        CurrentPokemon.setType(pokemon.getType());
-        CurrentPokemon.setMainType(pokemon.getMainType());
         int color = POKEMON_TYPE_COLORS.get(pokemon.getMainType());
         PokemonDetailsLayout.setBackgroundColor(getResources().getColor(color));
 

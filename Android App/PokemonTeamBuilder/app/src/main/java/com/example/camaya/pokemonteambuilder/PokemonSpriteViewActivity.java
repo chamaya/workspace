@@ -20,7 +20,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class PokemonSpriteViewActivity extends AppCompatActivity {
 
-    final String POKEMON_SPRITE_URL = "https://www.serebii.net/sunmoon/pokemon/%03d.png";
+    final String POKEMON_SPRITE_URL = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/%d.png";//"https://www.serebii.net/sunmoon/pokemon/%03d.png";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +29,7 @@ public class PokemonSpriteViewActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        ArrayList<Pokemon> PokemonAdded = (ArrayList) bundle.getParcelableArrayList("Pokemon");
+        final ArrayList<Pokemon> PokemonAdded = (ArrayList) bundle.getParcelableArrayList("Pokemon");
 
         addPokemon(PokemonAdded);
 
@@ -57,7 +57,6 @@ public class PokemonSpriteViewActivity extends AppCompatActivity {
             pokemonSprite.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(PokemonSpriteViewActivity.this, "CLICKABLE", Toast.LENGTH_SHORT).show();
                     startCardCloseUp(pokemon);
                 }
             });
@@ -86,7 +85,7 @@ public class PokemonSpriteViewActivity extends AppCompatActivity {
 
     private void startCardCloseUp(Pokemon pokemon) {
         Intent intent = new Intent(this, PokemonCardCloseUpActivity.class);
-        intent.putExtra("pokemonId", pokemon.getId());
+        intent.putExtra("pokemon", pokemon);
 
         startActivity(intent);
     }
