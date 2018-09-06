@@ -13,30 +13,30 @@ import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class PokemonSelectorActivity extends AppCompatActivity {
-    final int NUMBER_OF_POKEMON = 802;
+    final static int NUMBER_OF_POKEMON = 802;
     final String POKEBALL_IMAGE = "pokeball_image_%d";
-    public ArrayList<Integer> PokemonAdded;
+    public ArrayList<Pokemon> PokemonAdded;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pokemon_selector);
-        PokemonAdded = new ArrayList<Integer>();
+        PokemonAdded = new ArrayList<Pokemon>();
         addPokeballs();
     }
 
 
     public void addPokemon(View view) {
-
         PokemonCardFragment pokemonCard = (PokemonCardFragment) getSupportFragmentManager().findFragmentById(R.id.card_fragment);
+        PokemonAdded.add(pokemonCard.getPokemon());
         int pokemonId = getRandomPokemon();
         pokemonCard.updateCardById(pokemonId);
 
-        PokemonAdded.add(pokemonId);
         addPokeballs();
 
         if(PokemonAdded.size() >= 6){
             Intent intent = new Intent(PokemonSelectorActivity.this, PokemonSpriteViewActivity.class);
+            intent.putExtra("Pokemon", PokemonAdded);
 
             startActivity(intent);
         }
@@ -62,7 +62,7 @@ public class PokemonSelectorActivity extends AppCompatActivity {
         }
     }
 
-    private int getRandomPokemon(){
+    public static int getRandomPokemon(){
         return ThreadLocalRandom.current().nextInt(1,NUMBER_OF_POKEMON + 1);
     }
 

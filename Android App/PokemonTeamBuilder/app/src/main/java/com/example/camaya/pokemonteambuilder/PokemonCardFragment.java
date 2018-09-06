@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
 
 import butterknife.BindView;
@@ -95,6 +96,7 @@ public class PokemonCardFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_pokemon_card, container, false);
         ButterKnife.bind(this,view);
+        CurrentPokemon = new Pokemon();
         return view;
     }
 
@@ -112,6 +114,7 @@ public class PokemonCardFragment extends Fragment {
         else{
             PokemonId = savedInstanceState.getInt("PokemonId", 25);
         }
+
         updateCardById(PokemonId);
 
     }
@@ -123,12 +126,14 @@ public class PokemonCardFragment extends Fragment {
     }
 
     public void updateCardById(int id){
+        CurrentPokemon = new Pokemon();
         LinearLayout moveLayout = getActivity().findViewById(R.id.pokemon_move_layout);
         moveLayout.removeAllViews();
         if(PokemonNameThread != null){
             PokemonNameThread.cancel(true);
         }
         resetLayout();
+        CurrentPokemon.setId(PokemonId);
         PokemonId = id;
 
         final String pokemonImageUrlFormated = String.format(POKEMON_IMAGE_URL, PokemonId);
@@ -187,6 +192,7 @@ public class PokemonCardFragment extends Fragment {
                             mainType.substring(1);
                 }
             }
+            pokemonType = pokemonType.substring(0,pokemonType.length() - 1);
 
             JSONArray pokemonMovesArray = pokemonJson.getJSONArray("moves");
             if(pokemonMovesArray.length() <= NUMBER_OF_POKEMON_MOVES){
@@ -204,11 +210,16 @@ public class PokemonCardFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        pokemonName = pokemonName.substring(0,1).toUpperCase() +
-                pokemonName.substring(1);
+        pokemonName = capitalizeFirstLetter(pokemonName);
         PokemonName.setText(pokemonName);
-        PokemonType.setText(pokemonType.substring(0,pokemonType.length() - 1));
-        //PokemonMoves.setText(pokemonMoves.substring(0,pokemonMoves.length() - 1));
+        CurrentPokemon.setName(pokemonName);
+        PokemonType.setText(pokemonType);
+        CurrentPokemon.setType(pokemonType);
+        CurrentPokemon.setMainType(mainType);
+
+        //for(int moveIndex = 0; moveIndex < CurrentPokemon.movePoolSize(); moveIndex++) {
+            //setPokemonMoveLayout(CurrentPokemon.moveName(moveIndex), CurrentPokemon.movePower(moveIndex), CurrentPokemon.moveType(moveIndex));
+        //}
         int color = POKEMON_TYPE_COLORS.get(mainType);
         PokemonDetailsLayout.setBackgroundColor(getResources().getColor(color));
 
@@ -217,7 +228,7 @@ public class PokemonCardFragment extends Fragment {
 
     private void addPokemonMove(JSONObject move) {
         try {
-            final String moveName = move.getString("name");
+            final String moveName = capitalizeFirstLetter(move.getString("name"));
             final String moveUrl = move.getString("url");
             Ion.with(this)
                 .load(moveUrl)
@@ -232,7 +243,8 @@ public class PokemonCardFragment extends Fragment {
                             JSONObject pokemonJson = new JSONObject(result);
                             Integer power = pokemonJson.optInt("power");
                             String type = capitalizeFirstLetter(pokemonJson.getJSONObject("type").getString("name"));
-                            setPokemonMoveLayout(capitalizeFirstLetter(moveName), (power != null) ? power : 20, type);
+                            CurrentPokemon.addMove(moveName, power, type);
+                            setPokemonMoveLayout(moveName, (power != null) ? power : 20, type);
 
                         }catch(JSONException je) {
                             Log.v("HELP", moveUrl);
@@ -241,11 +253,16 @@ public class PokemonCardFragment extends Fragment {
                         }
                     }
 
-                });
+                })
+            .get();
 
 
         } catch (JSONException e) {
             e.printStackTrace();
+        }catch(InterruptedException ie){
+            ie.printStackTrace();
+        }catch(ExecutionException ee){
+            ee.printStackTrace();
         }
 
     }
@@ -277,5 +294,8 @@ public class PokemonCardFragment extends Fragment {
     }
 
 
+    public Pokemon getPokemon() {
+        return CurrentPokemon;
+    }
 }
 //java.util.concurrent.CancellationException
