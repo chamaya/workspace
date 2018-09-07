@@ -55,6 +55,7 @@ public class PokemonSelectorActivity extends AppCompatActivity {
             addButton.setEnabled(true);
             PokemonCardFragment pokemonCard = (PokemonCardFragment) getSupportFragmentManager().findFragmentById(R.id.card_fragment);
             Pokemon pokemon = null;
+            addPokeballs();
 
             GetPokemonThread pokemonThread = new GetPokemonThread(pokemon, pokemonCard);
             pokemonThread.start();
@@ -69,8 +70,10 @@ public class PokemonSelectorActivity extends AppCompatActivity {
 
     public void skipPokemon(View view) {
         PokemonCardFragment pokemonCard = (PokemonCardFragment) getSupportFragmentManager().findFragmentById(R.id.card_fragment);
-        int pokemonId = getRandomPokemon();
-        pokemonCard.updateCardById(pokemonId);
+        Integer pokemonId = pokemonCard.getCurrentPokemon().getId();
+        pokemonCard.cancelThread(pokemonId);
+        int randomPokemonId = getRandomPokemon();
+        pokemonCard.updateCardById(randomPokemonId);
     }
 
     private void addPokeballs(){
@@ -82,7 +85,13 @@ public class PokemonSelectorActivity extends AppCompatActivity {
             pokeball.setImageResource(R.drawable.pokeball);
             pokeballLayout.addView(inflated);
         }
-        for(int pokemon = 0; pokemon < 6-PokemonAdded.size(); pokemon++){
+        for(int pokemon = 0; pokemon < addPresses-PokemonAdded.size(); pokemon++){
+            View inflated = LayoutInflater.from(this).inflate(R.layout.pokeball, pokeballLayout, false);
+            ImageView pokeball =  inflated.findViewById(R.id.pokeball_image);
+            pokeball.setImageResource(R.drawable.pokeball_grey);
+            pokeballLayout.addView(inflated);
+        }
+        for(int pokemon = 0; pokemon < 6-addPresses; pokemon++){
             getLayoutInflater().inflate(R.layout.pokeball, pokeballLayout);
         }
     }

@@ -9,11 +9,12 @@
     tools:context=".PokemonSelectorActivity">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/pokeball_layout"
         android:orientation="horizontal"
-        android:layout_marginVertical="20sp"
+        android:layout_gravity="end"
+        android:layout_marginVertical="10sp"
         android:layout_marginHorizontal="17sp"
         android:layout_weight="1">
 
@@ -21,12 +22,12 @@
 
     <fragment
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/card_fragment"
         tools:layout="@layout/fragment_pokemon_card"
         android:layout_marginHorizontal="20sp"
         android:layout_weight="20"
-        android:name="com.example.camaya.pokemonteambuilder.PokemonCardFragment"/>
+        android:name="com.example.camaya.pokemonteambuilder.PokemonCardFragment" />
 
     <LinearLayout
         android:layout_width="wrap_content"

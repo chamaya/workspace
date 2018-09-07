@@ -56,10 +56,10 @@ public class PokemonCardFragment extends Fragment {
 
 
     int PokemonId;
-    Future<String> PokemonNameThread;
     Pokemon CurrentPokemon;
     HashMap<Integer, Pokemon> PokemonBuilding = new HashMap<Integer,Pokemon>();
     Stack<Pokemon> PokemonReady = new Stack<Pokemon>();
+    HashMap<Integer, ArrayList<Future<String>>> ActiveThreads = new HashMap<Integer, ArrayList<Future<String>>>();
 
     final String POKEMON_IMAGE_URL = "https://www.serebii.net/art/th/%d.png";
     final String POKEMON_INFO_URL = "https://pokeapi.co/api/v2/pokemon/%d/";
@@ -110,7 +110,7 @@ public class PokemonCardFragment extends Fragment {
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         if(savedInstanceState == null && CurrentPokemon == null){
-            updateCardById(132);
+            updateCardById(133);
         }
         else if(savedInstanceState == null && CurrentPokemon != null){
             updateCardByPokemon(CurrentPokemon);
@@ -129,46 +129,6 @@ public class PokemonCardFragment extends Fragment {
         outState.putSerializable("CurrentPokemon", CurrentPokemon);
     }
 
-    public void updateCardById(int id){
-        CurrentPokemon = new Pokemon();
-        CurrentPokemon.setId(id);
-        PokemonId = id;
-        final Pokemon pokemon = new Pokemon();
-        pokemon.setId(id);
-        PokemonBuilding.put((Integer) pokemon.getId(), pokemon);
-
-
-        LinearLayout moveLayout = getActivity().findViewById(R.id.pokemon_move_layout);
-        moveLayout.removeAllViews();
-
-        resetLayout();
-
-
-        final String pokemonImageUrlFormated = String.format(POKEMON_IMAGE_URL, PokemonId);
-        Picasso.get()
-                .load(pokemonImageUrlFormated)
-                .placeholder(R.drawable.pikachu_sill)
-                .into(PokemonImage);
-
-        final String pokemonInfoUrlFormated = String.format(POKEMON_INFO_URL, PokemonId);
-        Ion.with(this)
-                .load(pokemonInfoUrlFormated)
-                .asString()
-                .setCallback(new FutureCallback<String>() {
-                    @Override
-                    public void onCompleted(Exception e, String result) {
-                        try{
-                            JSONObject pokemonJson = new JSONObject(result);
-                            setLayout(pokemonJson, pokemon.getId());
-
-                        }catch(JSONException je) {
-                            Log.v("HELP", pokemonInfoUrlFormated);
-                        }
-                    }
-
-                });
-
-    }
 
     public void updateCardByPokemon(Pokemon pokemon){
         LinearLayout moveLayout = getActivity().findViewById(R.id.pokemon_move_layout);
@@ -197,9 +157,62 @@ public class PokemonCardFragment extends Fragment {
 
     }
 
+    public void updateCardById(int id){
+        if(id == 132){
+            id = 1;
+        }
+        CurrentPokemon = new Pokemon();
+        CurrentPokemon.setId(id);
+        PokemonId = id;
+        final Pokemon pokemon = new Pokemon();
+        pokemon.setId(id);
+        PokemonBuilding.put((Integer) pokemon.getId(), pokemon);
+
+
+        LinearLayout moveLayout = getActivity().findViewById(R.id.pokemon_move_layout);
+        moveLayout.removeAllViews();
+
+        resetLayout();
+
+
+        final String pokemonImageUrlFormated = String.format(POKEMON_IMAGE_URL, PokemonId);
+        Picasso.get()
+                .load(pokemonImageUrlFormated)
+                .placeholder(R.drawable.pikachu_sill)
+                .into(PokemonImage);
+
+        final String pokemonInfoUrlFormated = String.format(POKEMON_INFO_URL, PokemonId);
+
+        ArrayList<Future<String>> futureArray = new ArrayList<Future<String>>();
+        futureArray.add(Ion.with(this)
+                .load(pokemonInfoUrlFormated)
+                .asString()
+                .setCallback(new FutureCallback<String>() {
+                    @Override
+                    public void onCompleted(Exception e, String result) {
+                        try{
+                            if(e instanceof CancellationException){
+                                throw new CancellationException();
+                            }
+                            JSONObject pokemonJson = new JSONObject(result);
+                            setLayout(pokemonJson, pokemon.getId());
+
+                        }catch(JSONException je) {
+                            Log.v("HELP", pokemonInfoUrlFormated);
+                        }catch(CancellationException ce){
+                            Log.v("THREADCANCELED","THREAD CANCELED");
+                        }
+                    }
+
+                })
+        );
+        ActiveThreads.put(pokemon.getId(), futureArray);
+
+    }
+
     private void resetLayout() {
         PokemonName.setText("Loading...");
-        PokemonType.setText("...");
+        PokemonType.setText("");
 
     }
 
@@ -256,7 +269,7 @@ public class PokemonCardFragment extends Fragment {
         try {
             final String moveName = capitalizeFirstLetter(move.getString("name"));
             final String moveUrl = move.getString("url");
-            Ion.with(this)
+            ActiveThreads.get(pokemonId).add(Ion.with(this)
                 .load(moveUrl)
                 .asString()
                 .setCallback(new FutureCallback<String>() {
@@ -279,11 +292,12 @@ public class PokemonCardFragment extends Fragment {
                         }catch(JSONException je) {
                             Log.v("HELP", moveUrl);
                         }catch(CancellationException ce){
-                            return;
+                            Log.v("THREADCANCELED","THREAD CANCELED");
                         }
                     }
 
-                });
+                })
+            );
 
 
 
@@ -339,13 +353,34 @@ public class PokemonCardFragment extends Fragment {
         }
     }
 
+    public Pokemon getCurrentPokemon(){
+        return CurrentPokemon;
+    }
+
+    public void cancelThread(Integer pokemonId){
+        for(int thread = 0; thread < ActiveThreads.get(pokemonId).size(); thread++){
+            if(!ActiveThreads.get(pokemonId).get(thread).isDone()){
+                ActiveThreads.get(pokemonId).get(thread).cancel(true);
+            }
+        }
+        if(PokemonBuilding.containsKey(pokemonId)){
+            PokemonBuilding.remove(pokemonId);
+        }else{
+            PokemonReady.pop();
+        }
+        ActiveThreads.remove(pokemonId);
+
+    }
+
 
     public Pokemon getPokemon() {
         try {
             if (PokemonReady.empty()) {
                 return null;
             }
-            return PokemonReady.pop();
+            Pokemon pokemon = PokemonReady.pop();
+            ActiveThreads.remove(pokemon.getId());
+            return pokemon;
         }catch(EmptyStackException ese){
             return null;
         }
