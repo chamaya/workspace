@@ -13,11 +13,18 @@ import android.widget.LinearLayout;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class PokemonSelectorActivity extends AppCompatActivity {
     final static int NUMBER_OF_POKEMON = 802;
     final String POKEBALL_IMAGE = "pokeball_image_%d";
     public ArrayList<Pokemon> PokemonAdded;
     public int addPresses;
+    int layer = 0;
+
+    @BindView(R.id.add_button)
+    Button addButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,16 +33,26 @@ public class PokemonSelectorActivity extends AppCompatActivity {
         PokemonAdded = new ArrayList<Pokemon>();
         addPresses = 0;
         addPokeballs();
+        ButterKnife.bind(this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        addPresses = 0;
+        PokemonAdded.clear();
+        addPokeballs();
+        addButton.setEnabled(true);
+        layer++;
+    }
 
     public void addPokemon(View view) {
         addPresses++;
         if(addPresses > 6) {
-            Button addButton = (Button) findViewById(R.id.add_button);
             addButton.setEnabled(false);
 
         }else{
+            addButton.setEnabled(true);
             PokemonCardFragment pokemonCard = (PokemonCardFragment) getSupportFragmentManager().findFragmentById(R.id.card_fragment);
             Pokemon pokemon = null;
 
@@ -84,9 +101,15 @@ public class PokemonSelectorActivity extends AppCompatActivity {
 
         public void run(){
 
-
+            int internalLayer = layer;
             while(pokemon == null){
                 pokemon = pokemonCard.getPokemon();
+                if(internalLayer != layer){
+                    break;
+                }
+            }
+            if(internalLayer != layer){
+                return;
             }
 
             runOnUiThread(new Runnable() {
@@ -100,6 +123,7 @@ public class PokemonSelectorActivity extends AppCompatActivity {
 
                     if(PokemonAdded.size() <= 6 && addPresses >= 6){
                         Intent intent = new Intent(PokemonSelectorActivity.this, PokemonSpriteViewActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.putExtra("Pokemon", PokemonAdded);
 
                         startActivity(intent);

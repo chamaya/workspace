@@ -50,7 +50,6 @@ public class PokemonSpriteViewActivity extends AppCompatActivity {
 
             Picasso.get()
                     .load(String.format(POKEMON_SPRITE_URL, pokemon.getId()))
-                    .placeholder(R.drawable.pikachu_sill)
                     .resize(200, 200)
                     .centerCrop()
                     .into(pokemonSprite);

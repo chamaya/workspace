@@ -36,7 +36,7 @@ public class Pokemon implements Serializable{
     }
 
     public boolean hasMove(){
-        return Moves.size() != 0;
+        return Moves != null && Moves.size() != 0;
     }
 
     public int movePoolSize(){
@@ -88,7 +88,7 @@ public class Pokemon implements Serializable{
     }
 
     public boolean hasDetails() {
-        return !name.isEmpty();
+        return name != null && !name.isEmpty();
     }
 
     public boolean isReady(){

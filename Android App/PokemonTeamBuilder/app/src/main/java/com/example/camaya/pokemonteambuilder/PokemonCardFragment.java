@@ -110,7 +110,7 @@ public class PokemonCardFragment extends Fragment {
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         if(savedInstanceState == null && CurrentPokemon == null){
-            updateCardById(4);
+            updateCardById(132);
         }
         else if(savedInstanceState == null && CurrentPokemon != null){
             updateCardByPokemon(CurrentPokemon);
