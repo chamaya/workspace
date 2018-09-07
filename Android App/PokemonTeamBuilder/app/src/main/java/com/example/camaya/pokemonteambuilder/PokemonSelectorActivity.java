@@ -18,10 +18,10 @@ import butterknife.ButterKnife;
 
 public class PokemonSelectorActivity extends AppCompatActivity {
     final static int NUMBER_OF_POKEMON = 802;
-    final String POKEBALL_IMAGE = "pokeball_image_%d";
     public ArrayList<Pokemon> PokemonAdded;
     public int addPresses;
     int layer = 0;
+    int Increment = 0;
 
     @BindView(R.id.add_button)
     Button addButton;
@@ -98,6 +98,10 @@ public class PokemonSelectorActivity extends AppCompatActivity {
 
     public static int getRandomPokemon(){
         return ThreadLocalRandom.current().nextInt(1,NUMBER_OF_POKEMON + 1);
+    }
+
+    public int Increment(){
+        return Increment++;
     }
 
     class GetPokemonThread extends Thread{

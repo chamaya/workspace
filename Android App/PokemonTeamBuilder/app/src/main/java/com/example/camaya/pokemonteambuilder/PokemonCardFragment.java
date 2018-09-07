@@ -110,7 +110,7 @@ public class PokemonCardFragment extends Fragment {
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         if(savedInstanceState == null && CurrentPokemon == null){
-            updateCardById(133);
+            updateCardById(PokemonSelectorActivity.getRandomPokemon());
         }
         else if(savedInstanceState == null && CurrentPokemon != null){
             updateCardByPokemon(CurrentPokemon);
@@ -186,6 +186,9 @@ public class PokemonCardFragment extends Fragment {
                         try{
                             if(e instanceof CancellationException){
                                 throw new CancellationException();
+                            }
+                            if(result == null){
+                                return;
                             }
                             JSONObject pokemonJson = new JSONObject(result);
                             setLayout(pokemonJson, pokemon.getId());
@@ -276,6 +279,9 @@ public class PokemonCardFragment extends Fragment {
                             if(e instanceof CancellationException){
                                 throw new CancellationException();
                             }
+                            if(result == null){
+                                return;
+                            }
                             JSONObject pokemonJson = new JSONObject(result);
                             Integer power = pokemonJson.optInt("power");
                             String type = capitalizeFirstLetter(pokemonJson.getJSONObject("type").getString("name"));
@@ -342,7 +348,7 @@ public class PokemonCardFragment extends Fragment {
         TextView moveNameTv =  move.findViewById(R.id.move_name_tv);
         TextView movePowerTv =  move.findViewById(R.id.move_power_tv);
         moveNameTv.setText(moveName);
-        movePowerTv.setText(power + "");
+        movePowerTv.setText((power == 0) ? "": power + "");
         int color = POKEMON_TYPE_COLORS.get(type);
         GradientDrawable bg = (GradientDrawable) move.getBackground();
         bg.setColor(getResources().getColor(color));
