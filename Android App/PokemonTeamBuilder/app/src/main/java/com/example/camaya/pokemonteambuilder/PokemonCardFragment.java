@@ -145,14 +145,7 @@ public class PokemonCardFragment extends Fragment {
                 .into(PokemonImage);
 
         //replace with function
-        PokemonName.setText(pokemon.getName());
-        PokemonType.setText(pokemon.getType());
-        int color = POKEMON_TYPE_COLORS.get(pokemon.getMainType());
-        PokemonDetailsLayout.setBackgroundColor(getResources().getColor(color));
-
-        for(int moveIndex = 0; moveIndex < pokemon.movePoolSize(); moveIndex++) {
-            setPokemonMoveLayout(pokemon.moveName(moveIndex), pokemon.movePower(moveIndex), pokemon.moveType(moveIndex));
-        }
+        setPokemonLayout(pokemon);
 
 
     }
@@ -221,6 +214,7 @@ public class PokemonCardFragment extends Fragment {
         String pokemonType = "";
         String pokemonMoves = "";
         String mainType = "";
+        String secondType = "";
         Pokemon pokemon = PokemonBuilding.get(pokemonId);
         try {
             pokemonName = pokemonJson.getJSONObject("species").getString("name");
@@ -232,6 +226,8 @@ public class PokemonCardFragment extends Fragment {
                 pokemonType += capitalizeFirstLetter(pokemonTypeArray.getJSONObject(type).getJSONObject("type").getString("name")) + "/";
                 if(pokemonTypeArray.getJSONObject(type).getInt("slot") == 1){
                     mainType = capitalizeFirstLetter(pokemonType.split("/")[type]);
+                }else{
+                    secondType = capitalizeFirstLetter(pokemonType.split("/")[type]);
                 }
             }
             pokemonType = pokemonType.substring(0,pokemonType.length() - 1);
@@ -259,6 +255,7 @@ public class PokemonCardFragment extends Fragment {
         pokemon.setName(pokemonName);
         pokemon.setType(pokemonType);
         pokemon.setMainType(mainType);
+        pokemon.setSecondType(secondType);
 
         finishThread(pokemon);
 
@@ -312,19 +309,29 @@ public class PokemonCardFragment extends Fragment {
             if (pokemon.getId() == CurrentPokemon.getId()) {
                 //replace with function
                 {
-                    PokemonType.setText(pokemon.getType());
-                    PokemonName.setText(pokemon.getName());
-                    int color = POKEMON_TYPE_COLORS.get(pokemon.getMainType());
-                    PokemonDetailsLayout.setBackgroundColor(getResources().getColor(color));
-                    for (int moveIndex = 0; moveIndex < pokemon.movePoolSize(); moveIndex++) {
-                        setPokemonMoveLayout(pokemon.moveName(moveIndex), pokemon.movePower(moveIndex), pokemon.moveType(moveIndex));
-                    }
+                    setPokemonLayout(pokemon);
                 }
                 CurrentPokemon = pokemon;
             }
 
             PokemonBuilding.remove(pokemon.getId());
             PokemonReady.push(pokemon);
+        }
+    }
+
+    private void setPokemonLayout(Pokemon pokemon){
+        PokemonType.setText(pokemon.getType());
+        PokemonName.setText(pokemon.getName());
+        int color = POKEMON_TYPE_COLORS.get(pokemon.getMainType());
+        PokemonDetailsLayout.setBackgroundColor(getResources().getColor(color));
+
+        color = POKEMON_TYPE_COLORS.get(pokemon.getSecondTypeIfNotMain());
+        LinearLayout pokemonOutsideImageLayout = getActivity().findViewById(R.id.pokemon_outside_image_layout);
+        pokemonOutsideImageLayout.setBackgroundColor(getResources().getColor(color));
+        //GradientDrawable bg = (GradientDrawable) PokemonDetailsLayout.getBackground();
+        //bg.setColor(getResources().getColor(color));
+        for (int moveIndex = 0; moveIndex < pokemon.movePoolSize(); moveIndex++) {
+            setPokemonMoveLayout(pokemon.moveName(moveIndex), pokemon.movePower(moveIndex), pokemon.moveType(moveIndex));
         }
     }
 
@@ -355,6 +362,21 @@ public class PokemonCardFragment extends Fragment {
 
     public Pokemon getCurrentPokemon(){
         return CurrentPokemon;
+    }
+
+    private String stylizeMoveName(String moveName){
+        String newName = "";
+        if(moveName.contains("-")){
+            String[] nameList = moveName.split("-");
+            for(int name = 0; name < nameList.length; name++){
+                newName += capitalizeFirstLetter(nameList[name]);
+            }
+        }else{
+            newName += moveName;
+        }
+        return newName;
+
+
     }
 
     public void cancelThread(Integer pokemonId){

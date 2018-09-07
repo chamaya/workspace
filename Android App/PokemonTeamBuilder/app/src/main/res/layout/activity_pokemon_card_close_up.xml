@@ -6,11 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".PokemonCardCloseUpActivity">
 
-    <fragment
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/card_fragment_close_up"
-        tools:layout="@layout/fragment_pokemon_card"
-        android:name="com.example.camaya.pokemonteambuilder.PokemonCardFragment"/>
+        android:background="@drawable/layout_pokemon_card"
+        android:padding="15sp">
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/card_fragment_close_up"
+            tools:layout="@layout/fragment_pokemon_card"
+            android:name="com.example.camaya.pokemonteambuilder.PokemonCardFragment"/>
+    </LinearLayout>
 
 </ScrollView>

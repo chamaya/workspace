@@ -19,6 +19,7 @@ public class Pokemon implements Serializable{
     private ArrayList<Move> Moves;
     private String type;
     private String mainType;
+    private String secondType;
 
     private static final long serialVersionUID = -7060210544600464481L;
 
@@ -87,6 +88,18 @@ public class Pokemon implements Serializable{
         this.type = type;
     }
 
+    public String getSecondType() {
+        return secondType;
+    }
+
+    public void setSecondType(String secondType) {
+        this.secondType = secondType;
+    }
+
+    public boolean hasSecondType(){
+        return secondType != null && !secondType.isEmpty();
+    }
+
     public boolean hasDetails() {
         return name != null && !name.isEmpty();
     }
@@ -94,6 +107,15 @@ public class Pokemon implements Serializable{
     public boolean isReady(){
         return hasDetails() && hasMove();
     }
+
+    public String getSecondTypeIfNotMain() {
+        if(hasSecondType()){
+            return secondType;
+        }else{
+            return mainType;
+        }
+    }
+
 
     public class Move implements Serializable{
         private String name;

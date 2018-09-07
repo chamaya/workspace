@@ -41,13 +41,15 @@
             android:layout_height="match_parent"
             android:onClick="skipPokemon"
             android:text="Skip"
+            android:background="#D6A538"
             android:layout_marginRight="20sp"/>
         <Button
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/add_button"
             android:onClick="addPokemon"
-            android:text="Add"/>
+            android:text="Add"
+            android:background="#D6A538"/>
     </LinearLayout>
 
 </LinearLayout>
