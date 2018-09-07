@@ -264,7 +264,7 @@ public class PokemonCardFragment extends Fragment {
 
     private void addPokemonMove(JSONObject move, final Integer pokemonId) {
         try {
-            final String moveName = capitalizeFirstLetter(move.getString("name"));
+            final String moveName = stylizeMoveName(move.getString("name"));
             final String moveUrl = move.getString("url");
             ActiveThreads.get(pokemonId).add(Ion.with(this)
                 .load(moveUrl)
@@ -369,10 +369,10 @@ public class PokemonCardFragment extends Fragment {
         if(moveName.contains("-")){
             String[] nameList = moveName.split("-");
             for(int name = 0; name < nameList.length; name++){
-                newName += capitalizeFirstLetter(nameList[name]);
+                newName += capitalizeFirstLetter(nameList[name]) + " ";
             }
         }else{
-            newName += moveName;
+            newName += capitalizeFirstLetter(moveName);
         }
         return newName;
 
