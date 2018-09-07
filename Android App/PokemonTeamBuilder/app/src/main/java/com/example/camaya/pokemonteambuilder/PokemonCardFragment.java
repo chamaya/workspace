@@ -32,6 +32,7 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.Stack;
 import java.util.concurrent.CancellationException;
@@ -340,10 +341,14 @@ public class PokemonCardFragment extends Fragment {
 
 
     public Pokemon getPokemon() {
-        if(PokemonReady.empty()){
+        try {
+            if (PokemonReady.empty()) {
+                return null;
+            }
+            return PokemonReady.pop();
+        }catch(EmptyStackException ese){
             return null;
         }
-        return PokemonReady.pop();
     }
 }
 //java.util.concurrent.CancellationException

@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -16,38 +17,37 @@ public class PokemonSelectorActivity extends AppCompatActivity {
     final static int NUMBER_OF_POKEMON = 802;
     final String POKEBALL_IMAGE = "pokeball_image_%d";
     public ArrayList<Pokemon> PokemonAdded;
+    public int addPresses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pokemon_selector);
         PokemonAdded = new ArrayList<Pokemon>();
+        addPresses = 0;
         addPokeballs();
     }
 
 
     public void addPokemon(View view) {
-        PokemonCardFragment pokemonCard = (PokemonCardFragment) getSupportFragmentManager().findFragmentById(R.id.card_fragment);
-        Pokemon pokemon = null;
-//        while(pokemon == null){
-//            pokemon = pokemonCard.getPokemon();
-//        }
-        pokemon = pokemonCard.getPokemon();
-        if(pokemon == null){
-            return;
+        addPresses++;
+        if(addPresses > 6) {
+            Button addButton = (Button) findViewById(R.id.add_button);
+            addButton.setEnabled(false);
+
+        }else{
+            PokemonCardFragment pokemonCard = (PokemonCardFragment) getSupportFragmentManager().findFragmentById(R.id.card_fragment);
+            Pokemon pokemon = null;
+
+            GetPokemonThread pokemonThread = new GetPokemonThread(pokemon, pokemonCard);
+            pokemonThread.start();
+            if(addPresses == 6){
+                Intent intent = new Intent(PokemonSelectorActivity.this, PokemonSpriteViewActivity.class);
+                intent.putExtra("Pokemon", PokemonAdded);
+                startActivity(intent);
+            }
         }
-        PokemonAdded.add(pokemon);
-        int pokemonId = getRandomPokemon();
-        pokemonCard.updateCardById(pokemonId);
 
-        addPokeballs();
-
-        if(PokemonAdded.size() >= 6){
-            Intent intent = new Intent(PokemonSelectorActivity.this, PokemonSpriteViewActivity.class);
-            intent.putExtra("Pokemon", PokemonAdded);
-
-            startActivity(intent);
-        }
     }
 
     public void skipPokemon(View view) {
@@ -72,6 +72,42 @@ public class PokemonSelectorActivity extends AppCompatActivity {
 
     public static int getRandomPokemon(){
         return ThreadLocalRandom.current().nextInt(1,NUMBER_OF_POKEMON + 1);
+    }
+
+    class GetPokemonThread extends Thread{
+        Pokemon pokemon;
+        PokemonCardFragment pokemonCard;
+        GetPokemonThread(Pokemon pokemon, PokemonCardFragment pokemonCard){
+            this.pokemon = pokemon;
+            this.pokemonCard = pokemonCard;
+        }
+
+        public void run(){
+
+
+            while(pokemon == null){
+                pokemon = pokemonCard.getPokemon();
+            }
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    PokemonAdded.add(pokemon);
+                    int pokemonId = getRandomPokemon();
+                    pokemonCard.updateCardById(pokemonId);
+
+                    addPokeballs();
+
+                    if(PokemonAdded.size() <= 6 && addPresses >= 6){
+                        Intent intent = new Intent(PokemonSelectorActivity.this, PokemonSpriteViewActivity.class);
+                        intent.putExtra("Pokemon", PokemonAdded);
+
+                        startActivity(intent);
+                    }
+                }
+            });
+
+        }
     }
 
 }
