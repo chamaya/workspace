@@ -59,6 +59,8 @@ public class PokemonSelectorActivity extends AppCompatActivity {
 
             GetPokemonThread pokemonThread = new GetPokemonThread(pokemon, pokemonCard);
             pokemonThread.start();
+            int pokemonId = getRandomPokemon();
+            pokemonCard.updateCardById(pokemonId);
             if(addPresses == 6){
                 Intent intent = new Intent(PokemonSelectorActivity.this, PokemonSpriteViewActivity.class);
                 intent.putExtra("Pokemon", PokemonAdded);
@@ -129,8 +131,6 @@ public class PokemonSelectorActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     PokemonAdded.add(pokemon);
-                    int pokemonId = getRandomPokemon();
-                    pokemonCard.updateCardById(pokemonId);
 
                     addPokeballs();
 
